@@ -1,0 +1,9 @@
+{
+    "git.ignoreLimitWarning": true,
+    "VsCodeTaskButtons.tasks" : [
+        { "label": "Start", "task": "Start Site" },
+        { "label": "Stop", "task": "Stop Site" },
+        { "label": "Restart", "task": "Restart Site" }
+    ]
+
+}

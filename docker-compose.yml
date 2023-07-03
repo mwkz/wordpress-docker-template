@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  wordpress:
+      build:
+        context: .
+        dockerfile: Dockerfile 
+      image: zs_wordpress
+      container_name: ${APP_ID}_wordpress
+      restart: 'no'
+      networks:
+          - wpdocker
+      ports:
+          - "443:443"
+          - "80:80"
+      volumes:
+          - ./config/apache2/conf/apache2.conf:/etc/apache2/apache2.conf
+          - ./config/apache2/conf/sites-enabled/:/etc/apache2/sites-enabled/
+          - ./config/apache2/conf/sites-available/:/etc/apache2/sites-available/
+          - ./config/apache2/conf/conf-enabled/ssl-params.conf:/etc/apache2/conf-enabled/ssl-params.conf
+          - ./config/apache2/conf/ssl/wpdocker.local.crt:/usr/local/apache2/conf/ssl/warthog.local.crt
+          - ./config/apache2/conf/ssl/wpdocker.local.key:/usr/local/apache2/conf/ssl/warthog.local.key
+          - ./wordpress:/var/www/html
+          - ./config/php/php.ini:/usr/local/etc/php/php.ini
+          - ./config/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      extra_hosts:
+          - "host.docker.internal:host-gateway"
+
+  mysql:
+      image: mariadb:10.6
+      container_name: ${APP_ID}_db
+      restart: 'no'
+      networks:
+          - wpdocker       
+      ports:
+          - "3306:3306"
+      volumes:
+          - ./config/mysql/backup.sql:/home/backup.sql
+          - ./db:/var/lib/mysql          
+          - ./config/phpmyadmin/config.inc.php:/var/www/html/config.inc.php
+      environment:
+          - MYSQL_DATABASE=${DB_NAME}
+          - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+          - MYSQL_USER=${DB_USER}
+          - MYSQL_PASSWORD=${DB_PASSWORD}
+
+
+  phpmyadmin:
+      container_name: ${APP_ID}_phpmyadmin
+      image: phpmyadmin/phpmyadmin
+      restart: 'no'
+      networks:
+          - wpdocker
+
+      ports:
+        - '8080:80'
+      environment:
+        PMA_HOST: ${APP_ID}_db
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}   
+        UPLOAD_LIMIT: 1200M                
+
+networks:
+  wpdocker:
+    name: ${APP_ID}_network
+    driver: bridge
