@@ -31,7 +31,8 @@ echo DB_PASSWORD=20042005 >> ../.env
 echo DB_USER=$1_$2   >> ../.env
 echo DB_PORT=3306 >> ../.env
 echo DB_NAME=$1_$2   >> ../.env 
-
+echo USER_ID=$(id -u)  >> ../.env 
+echo GROUP_ID=$(id -g) >> ../.env 
 
 cp docker-compose.yml ..
 cp Dockerfile ..

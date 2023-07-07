@@ -15,6 +15,17 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
+
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
+RUN userdel -f www-data &&\
+    if getent group www-data ; then groupdel www-data; fi &&\
+    groupadd -g ${GROUP_ID} www-data &&\
+    useradd -l -u ${USER_ID} -g www-data www-data &&\
+    install -d -m 0755 -o www-data -g www-data /home/www-data
+        
+
 # Copy xdebug.ini into the container
 #COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
