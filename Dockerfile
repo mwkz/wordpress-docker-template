@@ -16,8 +16,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     mv wp-cli.phar /usr/local/bin/wp
 
 
-ARG USER_ID=1000
-ARG GROUP_ID=1000
+ARG USER_ID
+ARG GROUP_ID
+
 
 RUN userdel -f www-data &&\
     if getent group www-data ; then groupdel www-data; fi &&\

@@ -5,14 +5,14 @@ services:
       build:
         context: .
         dockerfile: Dockerfile 
+        args:
+          USER_ID: ${USER_ID:-0}
+          GROUP_ID: ${GROUP_ID:-0}
       image: zs_wordpress
       container_name: ${APP_ID}_wordpress
       restart: 'no'
       networks:
           - wpdocker
-      args:
-        USER_ID: ${USER_ID:-0}
-        GROUP_ID: ${GROUP_ID:-0}
       ports:
           - "443:443"
           - "80:80"
